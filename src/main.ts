@@ -33,3 +33,6 @@ app.use(router);
 app.listen(process.env.Port, () => {
 	console.log(`\n${green("Server is running on port")} ${blue(process.env.Port)}`);
 });
+
+//Export the App
+export { app };

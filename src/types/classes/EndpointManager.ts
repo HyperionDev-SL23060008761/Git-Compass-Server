@@ -50,7 +50,7 @@ export class EndpointManager {
 	}
 
 	//Import Endpoints from a Routes Folder
-	private importRoutes(routesPath: string): void {
+	private async importRoutes(routesPath: string) {
 		//Get the Method Folders (GET, POST, PUT, DELETE, etc)
 		const methodFolderList = readdirSync(routesPath);
 
@@ -72,12 +72,12 @@ export class EndpointManager {
 			}
 
 			//Get the List of Endpoints in this Method's Folder
-			this.loadEndpointsFromFolder(routesPath, method, fullPath);
+			await this.loadEndpointsFromFolder(routesPath, method, fullPath);
 		}
 	}
 
 	//Gets the List of Endpoints in a Path (using recursion to get the full path to the endpoint)
-	private loadEndpointsFromFolder(routesPath: string, method: RequestMethod, path: string) {
+	private async loadEndpointsFromFolder(routesPath: string, method: RequestMethod, path: string) {
 		//Get the List of Files in the Current Path
 		const fileList = readdirSync(path);
 
@@ -96,7 +96,7 @@ export class EndpointManager {
 			}
 
 			//Create the Endpoint from it's full path
-			const newEndpoint = this.createEndpointFromFile(routesPath, method, fullPath);
+			const newEndpoint = await this.createEndpointFromFile(routesPath, method, fullPath);
 
 			//Check if the New Endpoint is invalid and continue to the Next File
 			if (!newEndpoint) {
@@ -112,11 +112,11 @@ export class EndpointManager {
 		}
 	}
 
-	private createEndpointFromFile(
+	private async createEndpointFromFile(
 		routesPath: string,
 		method: RequestMethod,
 		fullPath: string
-	): null | Endpoint {
+	): Promise<null | Endpoint> {
 		//Check if the Endpoint File is not a valid file and end the Creation
 		if (!fullPath.endsWith(".js") && !fullPath.endsWith(".ts")) return null;
 
@@ -134,7 +134,7 @@ export class EndpointManager {
 		const endpointPath = pathArray.join("/").replace(/\..*/g, "");
 
 		//Get the Endpoint Handler
-		const endpointHandler = require(fullPath);
+		const endpointHandler = await import(`file://${fullPath}`);
 
 		//Check if the Endpoint Handler is not Valid and end the Creation
 		if (!endpointHandler || !endpointHandler.default) return null;
