@@ -10,9 +10,10 @@ const endpointManager = new EndpointManager(`${__dirname}/routes`);
 
 //Setup the Router
 export function router(req: Request, res: Response, next: NextFunction) {
+	/*
 	//Get the Request's IP
 	const requestIP = req.hostname;
-	/*
+	
 	//Get the Rate Limit Status for the Request IP
 	const isRateLimited = rateLimiter.isRateLimited(requestIP);
 

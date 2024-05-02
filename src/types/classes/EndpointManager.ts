@@ -139,11 +139,15 @@ export class EndpointManager {
 		//Check if the Endpoint Handler is not Valid and end the Creation
 		if (!endpointHandler || !endpointHandler.default) return null;
 
+		//Setup the Final Handler Function
+		const handlerFunction: EndpointHandler =
+			endpointHandler.default.default || endpointHandler.default;
+
 		//Setup the New Endpoint
 		const newEndpoint: Endpoint = {
 			method: method,
 			path: `/${endpointPath}`,
-			handler: endpointHandler.default,
+			handler: handlerFunction,
 		};
 
 		//Return the Endpoint
