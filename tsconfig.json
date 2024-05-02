@@ -5,6 +5,7 @@
 
 		/* Modules */
 		"module": "NodeNext",
+		"rootDir": "./src",
 		"outDir": "./dist",
 		"esModuleInterop": true,
 		"forceConsistentCasingInFileNames": true,
@@ -15,5 +16,6 @@
 		"noImplicitAny": true,
 		"noImplicitThis": true,
 		"skipLibCheck": true
-	}
+	},
+	"exclude": ["./tests"]
 }
