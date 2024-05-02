@@ -1,0 +1,19 @@
+{
+	"compilerOptions": {
+		/* Language and Environment */
+		"target": "ESNext",
+
+		/* Modules */
+		"module": "NodeNext",
+		"outDir": "./dist",
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+		"moduleResolution": "NodeNext",
+
+		/* Type Checking */
+		"strict": true,
+		"noImplicitAny": true,
+		"noImplicitThis": true,
+		"skipLibCheck": true
+	}
+}

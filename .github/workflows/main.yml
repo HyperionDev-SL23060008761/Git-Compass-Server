@@ -1,0 +1,39 @@
+name: Git Compass Server
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: [portfolio-git-compass-server]
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v1
+
+      - name: Setup the Environment File
+        run: |
+          cp /home/portfolio/projects/git-compass-server/main.env /home/portfolio/projects/git-compass-server/server-files/.env
+
+      - name: Install Required Modules
+        run: |
+          bun install
+
+      - name: Build the Project
+        run: |
+          bun run build
+
+      - name: Restart App
+        run: |
+          pm2 stop "Git Compass Server"
+          pm2 reset "Git Compass Server"
+          pm2 start "Git Compass Server"
+
+    #PM2 START COMMAND: pm2 start bun --name "Git Compass Server" -- run start
