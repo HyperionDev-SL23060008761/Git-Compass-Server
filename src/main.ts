@@ -21,6 +21,13 @@ const app = express();
 app.use(helmet());
 
 //Setup the CORS Middleware
+app.use(
+	cors({
+		origin: process.env.CorsAllowedOrigins?.split(","),
+	})
+);
+
+//Setup the CORS Middleware
 app.use(cors());
 
 //Setup the Body Parser Middleware
