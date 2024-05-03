@@ -1,5 +1,8 @@
 //External Imports
-import { User, Repository, Organization } from "@octokit/webhooks-types";
+import { User, Organization } from "@octokit/webhooks-types";
+
+//Internal Imports
+import { RepositoryData } from "../types";
 
 //Export the Interface
 export interface UserData extends User {
@@ -14,7 +17,7 @@ export interface UserData extends User {
 	organizations?: Array<Organization> | null;
 	public_gists: number;
 	public_repos: number;
-	repositories?: Array<Repository> | null;
+	repositories?: Array<RepositoryData> | null;
 	twitter_username: string | null;
 	updated_at: string;
 }

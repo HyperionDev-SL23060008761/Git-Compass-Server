@@ -1,15 +1,26 @@
 //External Imports
 import { Octokit } from "octokit";
-import { Repository, Organization } from "@octokit/webhooks-types";
+import { createAppAuth } from "@octokit/auth-app";
+import { Organization, Commit } from "@octokit/webhooks-types";
 
 //Internal Imports
-import { UserCache, UserData } from "./types/types";
+import { RepositoryData, UserCache, UserData } from "./types/types";
 
 //Setup a New User Cache
 const userCache = new UserCache();
 
-//Setup Octokit
-const octokit = new Octokit();
+//Setup the Auth Data
+const authData = {
+	authStrategy: createAppAuth,
+	auth: {
+		appId: process.env.GithubAppID,
+		privateKey: process.env.GithubAppPrivateKey,
+		installationId: process.env.GithubAppInstallationID,
+	},
+};
+
+//Setup Octokit (With Auth Data if Authdata is Valid)
+const octokit = authData.auth.appId ? new Octokit(authData) : new Octokit();
 
 //Returns the Requested user from Git Hub with the Matching Username
 export async function getGitUser(username: string): Promise<UserData | null> {
@@ -64,7 +75,7 @@ export async function getGitUserList(username: string): Promise<Array<UserData> 
 }
 
 //Returns the List of Repositories from Git Hub for the User with the Matching Username
-async function getRepositoriesForUser(user: UserData): Promise<Array<Repository> | null> {
+async function getRepositoriesForUser(user: UserData): Promise<Array<RepositoryData> | null> {
 	//Check if the User is a bot and Return Null
 	if (user.type == "Bot") return null;
 
@@ -81,7 +92,11 @@ async function getRepositoriesForUser(user: UserData): Promise<Array<Repository>
 	if (!response.data) return null;
 
 	//Get the Repositories from the Response Data (Type Narrowing It)
-	const repositories: Array<Repository> = response.data;
+	const repositories: Array<RepositoryData> = response.data;
+
+	//Loop through the List of Repositories and get their Commits
+	for (const repository of repositories)
+		repository.commits = await getCommitsForRepository(repository);
 
 	//Return the Repositories
 	return repositories;
@@ -106,6 +121,26 @@ async function getOrganizationsForUser(user: UserData): Promise<Array<Organizati
 
 	//Return the Organizations
 	return organizations;
+}
+
+//Returns the List of Commits from Git Hub for the Requested Repository
+async function getCommitsForRepository(repository: RepositoryData): Promise<Array<Commit> | null> {
+	//Send an Octokit Request
+	const response = await octokit
+		.request(`GET /repos/${repository.full_name}/commits?per_page=5`)
+		.catch(err => null);
+
+	//Check if the Commits Could not be Found
+	if (!response || !isInRange(response.status, 200, 299)) return null;
+
+	//Check if the Response Data is Empty
+	if (!response.data) return null;
+
+	//Get the Commits from the Response Data (Type Narrowing It)
+	const commits: Array<Commit> = response.data;
+
+	//Return the Commits
+	return commits;
 }
 
 //Checks if a Number is Within a Range

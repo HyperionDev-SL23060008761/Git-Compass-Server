@@ -6,6 +6,7 @@ import { RateLimit } from "./classes/RateLimit";
 //Import Interfaces
 import { Endpoint } from "./interfaces/Endpoint";
 import { EndpointList } from "./interfaces/EndpointList";
+import { RepositoryData } from "./interfaces/RepositoryData";
 import { UserData } from "./interfaces/UserData";
 
 //Import Types
@@ -16,7 +17,7 @@ import { RequestMethod } from "./types/RequestMethod";
 export { EndpointManager, RateLimit, UserCache };
 
 //Export Interfaces
-export type { Endpoint, EndpointList, UserData };
+export type { Endpoint, EndpointList, RepositoryData, UserData };
 
 //Export Types
 export { EndpointHandler, RequestMethod };
